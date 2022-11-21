@@ -8,6 +8,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.RegisterServices();
 var app = builder.Build();
 
+app.Use(async (ctx, next) =>
+{
+	try
+	{
+		await next();
+	}
+	catch (Exception)
+	{
+		ctx.Response.StatusCode = 500;
+		await ctx.Response.WriteAsync("An error acurred");
+		throw;
+	}
+});
+
 app.UseHttpsRedirection();
 app.RegisterEndpointDefinitios();
 
